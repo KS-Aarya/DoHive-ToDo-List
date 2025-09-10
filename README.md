@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 DoHive - AngularJS + Flask + MongoDB Todo app with daily AI summary
 
 Prerequisites
@@ -36,3 +37,6 @@ Summary logic
 
 
 
+=======
+# DoHive-ToDo-List
+>>>>>>> b06d5903338705f6a8a2a3e0c367ba25c1c11143
