@@ -1,0 +1,69 @@
+body { min-height: 100vh; }
+.card { border: none; }
+.card-title { font-weight: 600; }
+.navbar-brand { font-weight: 700; }
+
+/* DoHive Honey Theme (yellow, orange, pastel) */
+:root {
+  --honey-50: #fff7e6;
+  --honey-100: #ffe9bf;
+  --honey-200: #ffd48c;
+  --honey-300: #ffc166;
+  --honey-400: #ffae3f;
+  --honey-500: #f59e0b; /* primary */
+  --honey-600: #db8800;
+  --honey-700: #b56c00;
+  --honey-800: #8f5400;
+  --honey-900: #6e4100;
+
+  /* Override Bootstrap primary */
+  --bs-primary: var(--honey-9add00);
+  --bs-primary-rgb: 245, 158, 11;
+  --bs-link-color: var(--honey-700);
+  --bs-link-hover-color: var(--honey-800);
+}
+
+body.bg-light {
+  background:
+    url('assets/honeycomb.svg') repeat,
+    linear-gradient(180deg, var(--honey-50), #fff) fixed;
+  background-size: 240px 208px, auto;
+  background-attachment: fixed, fixed;
+  background-position: center top, center top;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.navbar.bg-primary {
+  background-color: var(--honey-700) !important;
+  background-image: linear-gradient(90deg, var(--honey-700), var(--honey-600));
+}
+
+.btn-primary {
+  background-color: var(--honey-500);
+  border-color: var(--honey-500);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--honey-600);
+  border-color: var(--honey-600);
+}
+.btn-outline-light {
+  color: #fff;
+  border-color: rgba(255,255,255,0.9);
+}
+.btn-outline-light:hover { background-color: rgba(255,255,255,0.15); }
+
+.card.shadow-sm {
+  box-shadow: 0 0.5rem 1rem rgba(245, 158, 11, 0.15);
+}
+
+.list-group-item {
+  border: 1px solid rgba(245, 158, 11, 0.12);
+}
+
+.form-check-input:checked {
+  background-color: var(--honey-500);
+  border-color: var(--honey-500);
+}
+
+.navbar-brand img { filter: drop-shadow(0 1px 0 rgba(0,0,0,0.08)); }

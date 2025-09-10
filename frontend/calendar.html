@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dohiveApp">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calendar - DoHive</title>
+    <link rel="icon" type="image/svg+xml" href="assets/dohive-logo.svg" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet" />
+    <style>
+        .calendar-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 0.5rem 1rem rgba(245, 158, 11, 0.15);
+        }
+        
+        .calendar-header {
+            background: linear-gradient(90deg, var(--honey-500), var(--honey-400));
+            color: white;
+            border-radius: 12px 12px 0 0;
+            padding: 1rem;
+        }
+        
+        .calendar-nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s;
+        }
+        
+        .calendar-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--honey-200);
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        }
+        
+        .calendar-day-header {
+            background: var(--honey-100);
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--honey-800);
+            font-size: 0.9rem;
+        }
+        
+        .calendar-day {
+            background: white;
+            min-height: 100px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            position: relative;
+        }
+        
+        .calendar-day:hover {
+            background: var(--honey-50);
+            border-color: var(--honey-300);
+        }
+        
+        .calendar-day.other-month {
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+        
+        .calendar-day.today {
+            background: var(--honey-100);
+            border: 2px solid var(--honey-500);
+        }
+        
+        .calendar-day.selected {
+            background: var(--honey-200);
+            border: 2px solid var(--honey-600);
+        }
+        
+        .day-number {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .todo-indicator {
+            position: absolute;
+            bottom: 0.25rem;
+            right: 0.25rem;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--honey-500);
+        }
+        
+        .todo-indicator.completed {
+            background: #28a745;
+        }
+        
+        .todo-indicator.overdue {
+            background: #dc3545;
+        }
+        
+        .todo-summary {
+            font-size: 0.75rem;
+            color: var(--honey-700);
+            margin-top: 0.25rem;
+            line-height: 1.2;
+        }
+        
+        .modal-header {
+            background: linear-gradient(90deg, var(--honey-500), var(--honey-400));
+            color: white;
+        }
+        
+        .btn-honey {
+            background-color: var(--honey-500);
+            border-color: var(--honey-500);
+            color: white;
+        }
+        
+        .btn-honey:hover {
+            background-color: var(--honey-600);
+            border-color: var(--honey-600);
+            color: white;
+        }
+        
+        .btn-honey-outline {
+            border-color: var(--honey-500);
+            color: var(--honey-500);
+        }
+        
+        .btn-honey-outline:hover {
+            background-color: var(--honey-500);
+            border-color: var(--honey-500);
+            color: white;
+        }
+    </style>
+</head>
+<body ng-controller="CalendarController as vm" class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <img src="assets/dohive-logo.svg" alt="DoHive" width="28" height="28" />
+                <span>DoHive</span>
+            </a>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-light" href="main.html">Todos</a>
+                <button class="btn btn-outline-light" ng-click="vm.logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="calendar-container">
+                    <div class="calendar-header d-flex justify-content-between align-items-center">
+                        <button class="calendar-nav-btn" ng-click="vm.previousMonth()">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <h3 class="mb-0">{{ vm.currentMonthYear }}</h3>
+                        <button class="calendar-nav-btn" ng-click="vm.nextMonth()">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="calendar-grid">
+                        <!-- Day headers -->
+                        <div class="calendar-day-header">Sun</div>
+                        <div class="calendar-day-header">Mon</div>
+                        <div class="calendar-day-header">Tue</div>
+                        <div class="calendar-day-header">Wed</div>
+                        <div class="calendar-day-header">Thu</div>
+                        <div class="calendar-day-header">Fri</div>
+                        <div class="calendar-day-header">Sat</div>
+                        
+                        <!-- Calendar days -->
+                        <div class="calendar-day" 
+                             ng-repeat="day in vm.calendarDays track by $index"
+                             ng-class="{
+                                 'other-month': !day.isCurrentMonth,
+                                 'today': day.isToday,
+                                 'selected': day.isSelected
+                             }"
+                             ng-click="vm.selectDate(day)">
+                            <div class="day-number">{{ day.dayNumber }}</div>
+                            <div class="todo-summary" ng-if="day.todoSummary">
+                                {{ day.todoSummary }}
+                            </div>
+                            <div class="todo-indicator" 
+                                 ng-if="day.todoCount > 0"
+                                 ng-class="{
+                                     'completed': day.completedCount === day.todoCount,
+                                     'overdue': day.overdueCount > 0
+                                 }"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Todo Detail Modal -->
+    <div class="modal fade" id="todoModal" tabindex="-1" ng-if="vm.selectedDate">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-calendar-day"></i> 
+                        Todos for {{ vm.selectedDateFormatted }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add Todo Form -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title">Add New Todo</h6>
+                            <form ng-submit="vm.addTodo()">
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" placeholder="Todo title" ng-model="vm.newTodo.title" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control" placeholder="Description" ng-model="vm.newTodo.description">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="time" class="form-control" ng-model="vm.newTodo.due_time">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="submit" class="btn btn-honey w-100">Add</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Todo List -->
+                    <div ng-if="vm.selectedDateTodos.length === 0" class="text-center text-muted py-4">
+                        <i class="fas fa-calendar-check fa-3x mb-3"></i>
+                        <p>No todos for this date. Add one above!</p>
+                    </div>
+                    
+                    <div class="list-group" ng-if="vm.selectedDateTodos.length > 0">
+                        <div class="list-group-item d-flex align-items-center justify-content-between" 
+                             ng-repeat="todo in vm.selectedDateTodos track by todo.id">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       ng-model="todo.completed" 
+                                       ng-change="vm.toggleCompleted(todo)">
+                                <label class="form-check-label" 
+                                       ng-class="{'text-decoration-line-through text-muted': todo.completed}">
+                                    {{ todo.title }}
+                                    <small class="text-muted" ng-if="todo.description">- {{ todo.description }}</small>
+                                    <small class="text-muted" ng-if="todo.due_date">— {{ vm.formatDate(todo.due_date) }}<span ng-if="todo.due_time"> {{ todo.due_time }}</span></small>
+                                    <span class="badge bg-danger ms-2" ng-if="!todo.completed && todo.missed">Missed</span>
+                                </label>
+                            </div>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-honey-outline" ng-click="vm.editTodo(todo)">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-outline-danger" ng-click="vm.deleteTodo(todo)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Todo Modal -->
+    <div class="modal fade" id="editTodoModal" tabindex="-1" ng-if="vm.editingTodo">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Todo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form ng-submit="vm.updateTodo()">
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <input type="text" class="form-control" ng-model="vm.editingTodo.title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-control" ng-model="vm.editingTodo.description">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Due Date</label>
+                            <input type="date" class="form-control" ng-model="vm.editingTodo.due_date">
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" ng-model="vm.editingTodo.completed">
+                            <label class="form-check-label">Completed</label>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-honey">Update</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

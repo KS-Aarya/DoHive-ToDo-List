@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="hiveGrad" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f6c453"/>
+      <stop offset="100%" stop-color="#e7a82a"/>
+    </linearGradient>
+  </defs>
+  <!-- Hive -->
+  <g transform="translate(10,18)">
+    <rect x="8" y="16" rx="10" ry="10" width="66" height="18" fill="url(#hiveGrad)"/>
+    <rect x="4" y="34" rx="10" ry="10" width="74" height="18" fill="url(#hiveGrad)"/>
+    <rect x="0" y="52" rx="10" ry="10" width="82" height="18" fill="url(#hiveGrad)"/>
+    <rect x="10" y="70" rx="10" ry="10" width="62" height="18" fill="url(#hiveGrad)"/>
+    <circle cx="41" cy="61" r="7" fill="#3b2f2f"/>
+  </g>
+  <!-- Bee -->
+  <g transform="translate(70,18)">
+    <ellipse cx="36" cy="44" rx="18" ry="12" fill="#ffdd57" stroke="#333" stroke-width="2"/>
+    <line x1="24" y1="44" x2="48" y2="44" stroke="#333" stroke-width="2"/>
+    <line x1="24" y1="38" x2="48" y2="38" stroke="#333" stroke-width="2"/>
+    <line x1="24" y1="50" x2="48" y2="50" stroke="#333" stroke-width="2"/>
+    <circle cx="22" cy="44" r="6" fill="#333"/>
+    <ellipse cx="34" cy="30" rx="8" ry="12" fill="#b3ecff" stroke="#2a6f89" stroke-width="2"/>
+    <ellipse cx="46" cy="30" rx="8" ry="12" fill="#b3ecff" stroke="#2a6f89" stroke-width="2"/>
+    <line x1="20" y1="40" x2="14" y2="34" stroke="#333" stroke-width="2"/>
+    <line x1="20" y1="48" x2="14" y2="54" stroke="#333" stroke-width="2"/>
+  </g>
+</svg>
+
+
+
+
+
